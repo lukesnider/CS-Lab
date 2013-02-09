@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class ChemistryData {
 	
-	File newfile;
+	File readfile;
 	DataInputStream in;
 	String filecontents;
 	public ChemistryData(String file) {
@@ -18,9 +18,9 @@ public class ChemistryData {
 	public void readFile(String file) {
 		int count = 0;
 		try {
-			newfile = new File(file);
+			readfile = new File(file);
 			in = new DataInputStream(new BufferedInputStream(
-                    new FileInputStream(newfile)));
+                    new FileInputStream(readfile)));
 			while (count < in.available()) {
 				filecontents = filecontents +"\n"+in.readInt();
 			}
