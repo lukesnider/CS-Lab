@@ -12,7 +12,8 @@ public class ChemistryData {
 	final int [] dataMax = {35,55,72,75,45,100};
 	int[][] data = new int[6][10];
 	File readfile;
-	DataInputStream in = null;
+	DataInputStream in;
+	String errors = "";
 	
 	public ChemistryData(String file) {
 		readFile(file);
@@ -22,12 +23,22 @@ public class ChemistryData {
 		
 		try {
 			readfile = new File(file);
+			int validateData = 0;
+			boolean valid = false;
 			in = new DataInputStream(new FileInputStream(readfile));
-				for (int r=0;r<6;r++) {
-					for (int c=0;c<10;c++) {
-							data[r][c] = in.readInt();
+
+			for (int r=0;r<6;r++) {
+				for (int c=0;c<10;c++) {
+					validateData = in.readInt();
+					valid = checkData(validateData,r);
+					while (!valid) {
+						maxError(validateData);
+						validateData = in.readInt();
+						valid = checkData(validateData,r);
 					}
+					data[r][c] = validateData;
 				}
+			}
 			in.close();
 		}
 		catch (EOFException e) {
@@ -46,24 +57,35 @@ public class ChemistryData {
 	public boolean checkData(int data, int row) {
 		
 		boolean valid = false;
-		if (row==0 && data<dataMax[0]) {
+		if (row==0 && data<=dataMax[0]) {
 			valid = true;
 		}
-		if (row==1 && data<dataMax[1]) {
+		if (row==1 && data<=dataMax[1]) {
 			valid = true;
 		}
-		if (row==2 && data<dataMax[2]) {
+		if (row==2 && data<=dataMax[2]) {
 			valid = true;
 		}
-		if (row==3 && data<dataMax[3]) {
+		if (row==3 && data<=dataMax[3]) {
 			valid = true;
 		}
-		if (row==4 && data<dataMax[4]) {
+		if (row==4 && data<=dataMax[4]) {
 			valid = true;
 		}
-		if (row==5 && data<dataMax[5]) {
+		if (row==5 && data<=dataMax[5]) {
 			valid = true;
 		}
 		return valid;
+	}
+	
+	public void maxError(int data) {
+		
+		try {
+			
+			throw new MaxDataException();
+		}
+		catch (MaxDataException e) {
+			errors += +data +" - "+e.getMessage()+"\n";
+		}
 	}
 }
