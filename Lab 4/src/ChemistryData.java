@@ -1,6 +1,4 @@
-//import java.io.BufferedInputStream;
 import java.io.EOFException;
-//import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.DataInputStream;
@@ -14,12 +12,13 @@ public class ChemistryData {
 	File readfile;
 	DataInputStream in;
 	String errors = "";
+	int errorCount=0;
 	
 	public ChemistryData(String file) {
-		readFile(file);
+		assignData(file);
 	}
 	
-	public void readFile(String file) {
+	public void assignData(String file) {
 		
 		try {
 			readfile = new File(file);
@@ -32,7 +31,6 @@ public class ChemistryData {
 					validateData = in.readInt();
 					valid = checkData(validateData,r);
 					while (!valid) {
-						maxError(validateData);
 						validateData = in.readInt();
 						valid = checkData(validateData,r);
 					}
@@ -57,35 +55,73 @@ public class ChemistryData {
 	public boolean checkData(int data, int row) {
 		
 		boolean valid = false;
-		if (row==0 && data<=dataMax[0]) {
+		if (row==0 && data<=dataMax[0]&& data>0) {
 			valid = true;
 		}
-		if (row==1 && data<=dataMax[1]) {
+		if (row==1 && data<=dataMax[1]&& data>0) {
 			valid = true;
 		}
-		if (row==2 && data<=dataMax[2]) {
+		if (row==2 && data<=dataMax[2]&& data>0) {
 			valid = true;
 		}
-		if (row==3 && data<=dataMax[3]) {
+		if (row==3 && data<=dataMax[3]&& data>0) {
 			valid = true;
 		}
-		if (row==4 && data<=dataMax[4]) {
+		if (row==4 && data<=dataMax[4]&& data>0) {
 			valid = true;
 		}
-		if (row==5 && data<=dataMax[5]) {
+		if (row==5 && data<=dataMax[5]&& data>0) {
 			valid = true;
 		}
+		
+		else {
+			if (data<0) {
+				try {
+					throw new NegativeNumberException();
+				}
+				catch (NegativeNumberException e) {
+					errors += +data+" - "+e.getMessage()+"\n";
+					errorCount++;
+				}
+			}
+			if (data>=dataMax[row]) {
+				try {
+					
+					throw new MaxDataException();
+				}
+				catch (MaxDataException e) {
+					errors += +data +" - "+e.getMessage()+dataMax[row]+"\n";
+					errorCount++;
+				}
+			}
+		}
+		
 		return valid;
 	}
 	
-	public void maxError(int data) {
+	public int rowAverage(int row) {
+		int average=0;
+		for (int c=0;c<10;c++) {
+			average += data[row][c];
+		}
+		average = average/10;
+		return average;
+	}
+	
+	public String toString() {
 		
-		try {
-			
-			throw new MaxDataException();
-		}
-		catch (MaxDataException e) {
-			errors += +data +" - "+e.getMessage()+"\n";
-		}
+		String string = "";
+		
+		string = errors+"\n"+"There were "+errorCount+" errors found in the data"+
+		"Chemistry Experiments Report\n"+
+		"Test#\tMax Data Point\tAverage Data Point\n"+
+				"1\t"+dataMax[0]+"\t\t"+rowAverage(0)+"\n"+
+				"2\t"+dataMax[1]+"\t\t"+rowAverage(1)+"\n"+
+				"3\t"+dataMax[2]+"\t\t"+rowAverage(2)+"\n"+
+				"4\t"+dataMax[3]+"\t\t"+rowAverage(3)+"\n"+
+				"5\t"+dataMax[4]+"\t\t"+rowAverage(4)+"\n"+
+				"6\t"+dataMax[5]+"\t\t"+rowAverage(5);
+		
+		return string;
 	}
 }

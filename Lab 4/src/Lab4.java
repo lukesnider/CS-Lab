@@ -12,14 +12,7 @@ public class Lab4 {
 		String file = keyboard.next();
 		ChemistryData string = new ChemistryData(file);
 
-		int count = 0;
-		for (int r=0;r<6;r++) {
-			for (int c=0;c<10;c++) {
-				System.out.println(string.data[r][c]);
-				count++;
-			}
-		}
-		System.out.println("\n"+count);
+		System.out.println(string.toString());
 
 	}
 
